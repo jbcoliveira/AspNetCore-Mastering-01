@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Joao.UI.Site.Data;
+using Joao.UI.Site.Servicos;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -28,7 +30,24 @@ namespace Joao.UI.Site
             services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2);
 
             //Injeção de dependencia
+            
+            //Nova instancia a cada solicitação - Padrão quando não se tem ideia o que utilizar
             services.AddTransient<IPedidoRepository, PedidoRepository>();
+
+
+            //Nova instancia a cada solicitação
+            services.AddTransient<IOperacaoTransient, Operacao>();
+
+            //Mesma Instancia durante todo request (WEB) - CORE, mais economico, utiliza mesma alocação de memória do objeto durante todo request
+            services.AddScoped<IOperacaoScoped, Operacao>();
+
+            //Mesma instancia para toda aplicação - Aplicar com cuidado
+            services.AddSingleton<IOperacaoSingleton, Operacao>();
+            services.AddSingleton<IOperacaoSingletonInstance>(new Operacao(Guid.Empty));
+
+            services.AddTransient<OperacaoService>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

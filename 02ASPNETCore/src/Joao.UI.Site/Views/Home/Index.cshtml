@@ -1,1 +1,9 @@
-﻿oi
+﻿@using Joao.UI.Site.Data
+
+@*Apenas demonstração*@
+@inject IPedidoRepository PedidoRepository
+
+
+Oi
+
+@PedidoRepository.ObterPedido().Id;

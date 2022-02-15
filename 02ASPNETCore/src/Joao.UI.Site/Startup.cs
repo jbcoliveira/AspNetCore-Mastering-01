@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -16,6 +18,13 @@ namespace Joao.UI.Site
     {
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<RazorViewEngineOptions>(options =>
@@ -26,6 +35,10 @@ namespace Joao.UI.Site
                 options.AreaViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
             });
 
+            //Suporte ao EF
+            services.AddDbContext<MyDBContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("MyDBContext"))
+            );
 
             services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2);
 
